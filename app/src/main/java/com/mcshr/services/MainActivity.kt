@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.mcshr.services.databinding.ActivityMainBinding
@@ -26,10 +27,13 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         binding.simpleService.setOnClickListener {
-            startService(TestService.newIntent(this))
+            startService(SimpleService.newIntent(this))
         }
         binding.foregroundService.setOnClickListener {
-            showNotification()
+            ContextCompat.startForegroundService(this, ForegroundService.newIntent(this))
+        }
+        binding.intentService.setOnClickListener{
+            ContextCompat.startForegroundService(this, SomeIntentService.newIntent(this))
         }
     }
 

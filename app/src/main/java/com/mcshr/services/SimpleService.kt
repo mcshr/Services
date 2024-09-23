@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-class TestService: Service(){
+class SimpleService: Service(){
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -45,7 +45,7 @@ class TestService: Service(){
     }
     companion object{
         fun newIntent(context: Context): Intent {
-            return Intent(context, TestService::class.java)
+            return Intent(context, SimpleService::class.java)
         }
     }
 }
