@@ -41,22 +41,28 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.startForegroundService(this, SomeIntentService.newIntent(this))
         }
         binding.jobScheduler.setOnClickListener {
+            startJobService()
+        }
+        binding.jobIntentService.setOnClickListener{
+            SomeJobIntentService.enqueque(this, page++)
+        }
+    }
 
-            val componentName = ComponentName(this, SomeJobService::class.java)
-            val jobInfo = JobInfo.Builder(SomeJobService.ID, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .build()
-            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
-            //jobScheduler.schedule(jobInfo)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val intent = SomeJobService.newIntent(page++)
-                jobScheduler.enqueue(jobInfo, JobWorkItem(intent))
-            } else {
-                ContextCompat.startForegroundService(
-                    this,
-                    SomeIntentService.newIntentExtra(this, page++)
-                )
-            }
+    private fun startJobService() {
+        val componentName = ComponentName(this, SomeJobService::class.java)
+        val jobInfo = JobInfo.Builder(SomeJobService.ID, componentName)
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+            .build()
+        val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+        //jobScheduler.schedule(jobInfo)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val intent = SomeJobService.newIntent(page++)
+            jobScheduler.enqueue(jobInfo, JobWorkItem(intent))
+        } else {
+            ContextCompat.startForegroundService(
+                this,
+                SomeIntentService.newIntentExtra(this, page++)
+            )
         }
     }
 
