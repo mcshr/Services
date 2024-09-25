@@ -30,6 +30,9 @@
         <service android:name=".SomeIntentService"
             android:foregroundServiceType="shortService"
             />
+        <service android:name=".SomeJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
     </application>
 
 </manifest>

@@ -2,6 +2,10 @@ package com.mcshr.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.app.job.JobWorkItem
+import android.content.ComponentName
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+    private var page = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +37,26 @@ class MainActivity : AppCompatActivity() {
         binding.foregroundService.setOnClickListener {
             ContextCompat.startForegroundService(this, ForegroundService.newIntent(this))
         }
-        binding.intentService.setOnClickListener{
+        binding.intentService.setOnClickListener {
             ContextCompat.startForegroundService(this, SomeIntentService.newIntent(this))
+        }
+        binding.jobScheduler.setOnClickListener {
+
+            val componentName = ComponentName(this, SomeJobService::class.java)
+            val jobInfo = JobInfo.Builder(SomeJobService.ID, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .build()
+            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+            //jobScheduler.schedule(jobInfo)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val intent = SomeJobService.newIntent(page++)
+                jobScheduler.enqueue(jobInfo, JobWorkItem(intent))
+            } else {
+                ContextCompat.startForegroundService(
+                    this,
+                    SomeIntentService.newIntentExtra(this, page++)
+                )
+            }
         }
     }
 

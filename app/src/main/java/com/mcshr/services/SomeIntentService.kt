@@ -22,9 +22,10 @@ class SomeIntentService() : IntentService("SomeIntentService") {
 
     @Deprecated("Deprecated in Java")
     override fun onHandleIntent(intent: Intent?) {
+        val page = intent?.getIntExtra(PAGE, 0)
         for (i in 0..10) {
             Thread.sleep(1000)
-            log("timer:$i")
+            log("timer:$i for page:$page")
         }
     }
 
@@ -32,7 +33,7 @@ class SomeIntentService() : IntentService("SomeIntentService") {
     override fun onCreate() {
         log("onCreate")
         super.onCreate()
-        setIntentRedelivery(false)
+        setIntentRedelivery(true)
         createChannel()
         val notification = createNotification()
         startForeground(ID_NOTIFICATION, notification)
@@ -71,10 +72,16 @@ class SomeIntentService() : IntentService("SomeIntentService") {
         private const val ID_CHANNEL_FOREGROUND = "id_notify_intentService"
         private const val NAME_CHANNEL_FOREGROUND = "Intent Service"
         private const val ID_NOTIFICATION = 776
+        private const val PAGE = "page"
 
         fun newIntent(context: Context): Intent {
-
-            return Intent(context, SomeIntentService::class.java)
+            return Intent(context, SomeIntentService::class.java).apply {
+            }
+        }
+        fun newIntentExtra(context: Context, page: Int):Intent{
+            return Intent(context, SomeIntentService::class.java).apply {
+                putExtra(PAGE, page)
+            }
         }
     }
 }
